@@ -205,21 +205,21 @@ if pilihan_modul == "1. Hidrolika Bendung & Rembesan":
 # --- MODUL 2: STABILITAS BENDUNG (LENGKAP) ---
 elif pilihan_modul == "2. Cek Stabilitas Bendung (Lengkap)":
     st.header("2. Analisis Stabilitas Bendung (Gravity Method)")
-    [cite_start]st.info("Termasuk kontrol: Guling, Geser, Eksentrisitas, & Daya Dukung Tanah [cite: 227-381].")
+    st.info("Termasuk kontrol: Guling, Geser, Eksentrisitas, & Daya Dukung Tanah.")
 
     # --- INPUT PARAMETER (DIPINDAHKAN DARI SIDEBAR KE MAIN BIAR RAPI) ---
     with st.expander("📝 1. Parameter Tanah & Dimensi (Klik untuk Edit)", expanded=False):
         c_t1, c_t2 = st.columns(2)
         with c_t1:
-            # [cite_start]Dimensi Dasar [cite: 263, 288]
+            # Dimensi Dasar
             B_dasar = st.number_input("Lebar Dasar Bendung (B) [m]", value=1.30, step=0.1)
             Df = st.number_input("Kedalaman Pondasi (Df) [m]", value=3.0, step=0.5)
-            # [cite_start]Data Tanah [cite: 247-251, 282-293]
+            # Data Tanah
             gamma_tanah = st.number_input("Berat Jenis Tanah (γ) [t/m3]", value=1.813, format="%.3f")
             phi = st.number_input("Sudut Geser Dalam (φ) [deg]", value=42.5)
             c_tanah = st.number_input("Kohesi (c) [t/m2]", value=0.142, format="%.3f")
         with c_t2:
-            # [cite_start]Faktor Terzaghi [cite: 290-293]
+            # Faktor Terzaghi
             st.write("**Faktor Terzaghi (Daya Dukung):**")
             Nc = st.number_input("Nc", value=95.0)
             Nq = st.number_input("Nq", value=90.0)
@@ -229,7 +229,7 @@ elif pilihan_modul == "2. Cek Stabilitas Bendung (Lengkap)":
     st.subheader("2. Input Gaya-Gaya (Rekapitulasi)")
     kondisi = st.radio("Kondisi Tinjauan:", ["Air Normal (M.A.N)", "Air Banjir (M.A.B)"], horizontal=True)
 
-    [cite_start]# [cite: 238-246, 345-355] (Default Value sesuai PDF)
+    # Default Value sesuai PDF
     if kondisi == "Air Normal (M.A.N)":
         def_Vt = 36.37; def_Va = 4.19; def_H = 10.28; def_Mt = 65.76; def_Mg = 41.77
     else: 
@@ -254,14 +254,14 @@ elif pilihan_modul == "2. Cek Stabilitas Bendung (Lengkap)":
     
     # 1. GULING
     SF_guling = Sigma_M_tahan / Sigma_M_guling if Sigma_M_guling != 0 else 0
-    # [cite_start]2. GESER [cite: 259-260]
+    # 2. GESER
     tan_phi = math.tan(math.radians(phi))
     Gaya_Gesek = (V_eff * tan_phi) + (c_tanah * B_dasar)
     SF_geser = Gaya_Gesek / Sigma_H if Sigma_H != 0 else 0
-    # [cite_start]3. EKSENTRISITAS [cite: 270, 380]
+    # 3. EKSENTRISITAS
     e = abs((M_net / V_eff) - (B_dasar / 2)) if V_eff != 0 else 0
     limit_e = B_dasar / 6
-    # [cite_start]4. DAYA DUKUNG [cite: 295-301]
+    # 4. DAYA DUKUNG
     B_eff_tanah = B_dasar - (2 * e)
     q_ult = (c_tanah * Nc) + (gamma_tanah * Df * (Nq - 1)) + (0.5 * gamma_tanah * B_eff_tanah * Ngamma)
     FS_tanah = 3.0 if kondisi == "Air Normal (M.A.N)" else 2.5
