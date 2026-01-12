@@ -82,7 +82,6 @@ def hitung_bangunan_terjun(Q, B, H_total, H_max_tiap_terjun, mode_hemat=False, g
     }
 
 # --- B. CEK STABILITAS (KHUSUS LANTAI TERJUNAN) ---
-# Ini tetap perlu ada DISINI karena bagian dari desain lantai kolam olak (bukan tubuh bendung)
 def cek_stabilitas_terjun(B, L, t, y1, y2, H_drop, qa=150, gamma_c=24, gamma_w=9.81):
     W_beton = L * B * t * gamma_c
     Vol_air = 0.5 * (y1 + y2) * L * B
@@ -182,7 +181,6 @@ st.markdown("---")
 
 with st.sidebar:
     st.header("🗂️ Navigasi Modul")
-    # Menu Stabilitas Bendung DIHAPUS karena sudah ada file terpisah
     pilihan_modul = st.radio("Pilih Modul:", [
         "1. Hidrolika Bendung & Rembesan", 
         "2. Bangunan Bagi Sadap", 
@@ -193,7 +191,7 @@ with st.sidebar:
 
 # --- MODUL 1: BENDUNG ---
 if pilihan_modul == "1. Hidrolika Bendung & Rembesan":
-    [cite_start]st.header("1. Hidrolika & Rembesan Bendung [cite: 67-173]")
+    st.header("1. Hidrolika & Rembesan Bendung")
     tab1, tab2 = st.tabs(["Hidrolika Mercu", "Kontrol Rembesan"])
     with tab1:
         col1, col2 = st.columns(2)
@@ -211,7 +209,7 @@ if pilihan_modul == "1. Hidrolika Bendung & Rembesan":
 
 # --- MODUL 2: BAGI SADAP ---
 elif pilihan_modul == "2. Bangunan Bagi Sadap":
-    [cite_start]st.header("2. Pintu Bagi Sadap [cite: 446-562]")
+    st.header("2. Pintu Bagi Sadap")
     Q = st.number_input("Debit (Q)", value=0.16); B = st.number_input("Lebar Pintu (B)", value=0.4); h = st.number_input("Kehilangan Tinggi (z)", value=0.1)
     if st.button("Hitung Bukaan"):
         a = Q / (0.8 * B * math.sqrt(2*9.81*h))
@@ -219,7 +217,7 @@ elif pilihan_modul == "2. Bangunan Bagi Sadap":
 
 # --- MODUL 3: TERJUNAN PRO ---
 elif pilihan_modul == "3. Bangunan Terjun (Pro Version)":
-    [cite_start]st.header("3. Desain Bangunan Terjun Bertingkat [cite: 563-590]")
+    st.header("3. Desain Bangunan Terjun Bertingkat")
     with st.sidebar:
         st.markdown("### ⚙️ Input Terjunan")
         Q_terjun = st.number_input("Debit (Q) m3/s", value=1.5); B_terjun = st.number_input("Lebar (B) m", value=2.0)
@@ -231,7 +229,6 @@ elif pilihan_modul == "3. Bangunan Terjun (Pro Version)":
         if btn_hitung:
             hasil = hitung_bangunan_terjun(Q_terjun, B_terjun, H_total, H_max, mode_hemat)
             L_stabil = hasil["Panjang Lantai Final (m)"] - hasil["Panjang Jatuhan Ld (m)"]
-            # Cek stabilitas ini HANYA untuk lantai kolam olak, bukan tubuh bendung
             stabil = cek_stabilitas_terjun(B_terjun, L_stabil, t_lantai, hasil["Kedalaman di Kaki (y1)"], hasil["Kedalaman Konjugasi (y2)"], hasil["Tinggi Terjun per Tingkat (m)"])
             st.session_state['hasil_terjun'] = hasil; st.session_state['stabil_terjun'] = stabil; st.session_state['input_terjun'] = {"Q": Q_terjun, "B": B_terjun, "H": H_total}
 
